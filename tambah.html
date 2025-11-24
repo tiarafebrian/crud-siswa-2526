@@ -12,7 +12,7 @@
  <div class="container">
  <h1>Form Tambah Siswa</h1>
 
-<form>
+<form id="formTambah">
 <label>NIS</label>
 <input type="text" id="nis" />
 
@@ -31,5 +31,21 @@
   
   <a href ="daftar.html">daftar.html</a>
  </div>
+ 
+ <script type="module">
+   import { tambahDataSiswa } from './main.js'
+   
+   // mengirimkan data siswa dari form
+   const formTambah = document.getElementById('formTambah')
+   
+   // event ketika form disubmit (dikirim)
+     formTambah.addEventListener('submit', function (e) {
+     // mencegah reload halaman
+     e.preventDefault()
+     
+    // eksekusi fungsi tambah data siswa
+    tambahDataSiswa()
+     })
+ </script>
  </body>
 </html>

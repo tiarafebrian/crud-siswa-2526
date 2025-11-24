@@ -86,3 +86,21 @@ export async function tampilkanDaftarSiswa() {
    
   })
 }
+
+ // fungsi untuk menambahkan data siswa
+export async function tambahDataSiswa() {
+  //ambil nilai dari form
+  const nis = document.getElementById('nis').value
+  const nama = document.getElementById('nama').value
+  const kelas = document.getElementById('kelas').value
+  
+  // tambahkan data ke firestore
+  await addDoc(siswaCollection, {
+    nis: nis,
+    nama: nama,
+    kelas: kelas
+  })
+  
+  // alihkan ke halaman daftar siswa
+  window.location.href = 'daftar.html'
+}
