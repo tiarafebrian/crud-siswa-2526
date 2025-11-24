@@ -13,17 +13,17 @@ import {
 
 // GANTI DENGAN FIREBASE CONFIG ANDA
 const firebaseConfig = {
-    apiKey: "AIzaSyAoa6XVwvLudjkyHxzF2Q8Xp61BEaG8_Ho",
-    authDomain: "insancemerlang-e829c.firebaseapp.com",
-    projectId: "insancemerlang-e829c",
-    storageBucket: "insancemerlang-e829c.firebasestorage.app",
-    messagingSenderId: "544747474491",
-    appId: "1:544747474491:web:be2b4a1553734a5c53961e"
+  apiKey: "AIzaSyAoa6XVwvLudjkyHxzF2Q8Xp61BEaG8_Ho",
+  authDomain: "insancemerlang-e829c.firebaseapp.com",
+  projectId: "insancemerlang-e829c",
+  storageBucket: "insancemerlang-e829c.firebasestorage.app",
+  messagingSenderId: "544747474491",
+  appId: "1:544747474491:web:be2b4a1553734a5c53961e"
 }
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
-const siswaColletion = collection(db,"siswa")
+const siswaColletion = collection(db, "siswa")
 
 // fungsi untuk menampilkan daftar siswa
 export async function tampilkanDaftarSiswa() {
@@ -37,7 +37,7 @@ export async function tampilkanDaftarSiswa() {
   tabel.innerHTML = ""
   
   // loop setiap dokumen dalam snapshot
-  snapshot.forEach ((doc) => {
+  snapshot.forEach((doc) => {
     // variabel untuk menyimpan data
     const data = doc.data()
     const id = doc.id
@@ -49,45 +49,48 @@ export async function tampilkanDaftarSiswa() {
     const kolomNIS = document.createElement("td")
     kolomNIS.textContent = data.kolomNIS
     
-   // buat elemen kolom untuk Nama
-   const kolomNama = document.createElement("td")
-   kolomNama.textContent = data.nama
-   
-   // buat elemen kolom untuk Kelas
-   const kolomKelas = document.createElement("td")
-   kolomKelas.textContent = data.kelas
-   
-   // buat elemen kolom untuk Aksi
-   const kolomAksi = document.createElement("td")
-   
-   // buat tombol edit
-   const tombolEdit = document.createElement("button")
-   tombolEdit.textContent = "Edit"
-   tombolEdit.href = "edit.html?id=" + id
-   tombolEdit.className = "button edit"
-   
-   // buat tombol hapus
-   const tombolHapus = document.createElement("button")
-   tombolHapus.textContent = "Hapus"
-   tombolHapus.className = "button delete"
-   
-   // tambahkan elemen ke dalam kolom Aksi
-   kolomAksi.appendChild(tombolEdit)
-   kolomAksi.appendChild(tombolHapus)
-   
-   // tambahkan kolom ke dalam baris
-   baris.appendChild(kolomNIS)
-   baris.appendChild(kolomNama)
-   baris.appendChild(kolomKelas)
-   baris.appendChild(kolomAksi)
-   
-   // tambahkan baris ke dalam tabel
-   tabel.appendChild(baris)
-   
+    // buat elemen kolom untuk Nama
+    const kolomNama = document.createElement("td")
+    kolomNama.textContent = data.nama
+    
+    // buat elemen kolom untuk Kelas
+    const kolomKelas = document.createElement("td")
+    kolomKelas.textContent = data.kelas
+    
+    // buat elemen kolom untuk Aksi
+    const kolomAksi = document.createElement("td")
+    
+    // buat tombol edit
+    const tombolEdit = document.createElement("button")
+    tombolEdit.textContent = "Edit"
+    tombolEdit.href = "edit.html?id=" + id
+    tombolEdit.className = "button edit"
+    
+    // buat tombol hapus
+    const tombolHapus = document.createElement("button")
+    tombolHapus.textContent = "Hapus"
+    tombolHapus.className = "button delete"
+    tombolHapus.onclick = async () => {
+      await hapusSiswa(id)
+    }
+    
+    // tambahkan elemen ke dalam kolom Aksi
+    kolomAksi.appendChild(tombolEdit)
+    kolomAksi.appendChild(tombolHapus)
+    
+    // tambahkan kolom ke dalam baris
+    baris.appendChild(kolomNIS)
+    baris.appendChild(kolomNama)
+    baris.appendChild(kolomKelas)
+    baris.appendChild(kolomAksi)
+    
+    // tambahkan baris ke dalam tabel
+    tabel.appendChild(baris)
+    
   })
 }
 
- // fungsi untuk menambahkan data siswa
+// fungsi untuk menambahkan data siswa
 export async function tambahDataSiswa() {
   //ambil nilai dari form
   const nis = document.getElementById('nis').value
@@ -95,7 +98,7 @@ export async function tambahDataSiswa() {
   const kelas = document.getElementById('kelas').value
   
   // tambahkan data ke firestore
-  await addDoc(siswaCollection, {
+  await addDoc(siswaColletion, {
     nis: nis,
     nama: nama,
     kelas: kelas
@@ -103,4 +106,16 @@ export async function tambahDataSiswa() {
   
   // alihkan ke halaman daftar siswa
   window.location.href = 'daftar.html'
+}
+
+// fungsi untuk menghapus data siswa
+export async function hapusSiswa(id) {
+  // konfirmasi sebelum menghapus
+  if (!condirm("yakin ingin menghapus data ini?")) return
+  
+  // menghapus dokumen siswa berdasarkan id
+  await deleteDoc(doc(db, "siswa", id))
+  
+  // refresh daftar siswa
+  await tampilkanDaftarSiswa()
 }
